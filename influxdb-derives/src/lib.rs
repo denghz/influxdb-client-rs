@@ -35,8 +35,9 @@ pub fn point_serialize_derive(input: TokenStream) -> TokenStream {
             return (quote_spanned! { span => compile_error!("Top attribute is not measurement, which was expected") }).into();
         }
     } else {
-        let span = ast.attrs[0].path.segments[0].ident.span();
-        return (quote_spanned! { span => compile_error!("Did not find a suitable measurement tag should be in format '#[point(measurement = \"name\")]'"); }).into();
+        ast.ident.to_string()
+        // let span = ast.attrs[0].path.segments[0].ident.span();
+        // return (quote_spanned! { span => compile_error!("Did not find a suitable measurement tag should be in format '#[point(measurement = \"name\")]'"); }).into();
     };
 
     let ast_fields = ast.fields();
@@ -78,7 +79,6 @@ pub fn point_serialize_derive(input: TokenStream) -> TokenStream {
                 .join(",")
         };
     }
-
     // Field-level
     let mut field_names: Vec<String> = Vec::new();
     let mut field_tokens: Vec<&syn::Ident> = Vec::new();
@@ -86,7 +86,7 @@ pub fn point_serialize_derive(input: TokenStream) -> TokenStream {
         .iter()
         .filter(|field| field.contains_tag(&namespace, &field_path));
     if fields.clone().count() == 0 {
-        return (quote!{ compile_error!("Fields are not optional, there needs to be atleast one!"); }).into();
+        return (quote!{ compile_error!("Fields are not optional, there needs to be at least one!"); }).into();
     }
     for field in fields {
         field_splitter!(field_names, field_tokens, field);
