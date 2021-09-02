@@ -120,8 +120,7 @@ pub fn point_serialize_derive(input: TokenStream) -> TokenStream {
     let timestamp = ast_fields
         .iter()
         .find(|field| field.contains_tag(&namespace, &timestamp_path)).and(
-            ast_fields.iter().find(|field| field.ident.as_ref().map(|i| i.to_string() == "timestamp").unwrap_or(false))
-
+            ast_fields.iter().find(|field| field.ident.unwrap().as_ref().map(|i| i.to_string() == "timestamp"))
         )
         .expect("Missing timestamp field! Use #[point(timestamp)] over the timestamp field");
 
