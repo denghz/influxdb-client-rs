@@ -1,8 +1,10 @@
+#![feature(min_specialization)]
 mod client;
 mod escape;
 mod macros;
 mod models;
 mod traits;
+
 
 // From library
 pub use crate::client::Client;

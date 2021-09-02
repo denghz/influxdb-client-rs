@@ -10,12 +10,11 @@ pub enum Value {
     Bool(bool),
 }
 
-impl From<&str> for Value {
-    fn from(v: &str) -> Value {
-        Value::Str(v.to_string())
+impl<T: ToString> From<T> for Value {
+    default  fn from(t: T) -> Self {
+        Value::Str(t.to_string())
     }
 }
-
 impl From<f64> for Value {
     fn from(v: f64) -> Value {
         Value::Float(v)
@@ -34,10 +33,16 @@ impl From<bool> for Value {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Timestamp {
     Str(String),
     Int(i64),
+}
+
+impl Default for Timestamp {
+    fn default() -> Self {
+        Timestamp::Int(0)
+    }
 }
 
 impl From<&str> for Timestamp {
