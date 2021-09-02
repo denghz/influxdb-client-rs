@@ -18,27 +18,35 @@ pub fn point_serialize_derive(input: TokenStream) -> TokenStream {
     let ast = syn::parse_macro_input!(input as syn::DeriveInput);
     let name = &ast.ident;
 
-    let measurement: String = if let syn::NestedMeta::Meta(syn::Meta::NameValue(syn::MetaNameValue{
-        path, lit, ..
-    })) =
-        namespace_parameter(&ast.attrs, &namespace).expect("Missing measurement tag, use #[point(measurement = \"something\")] before struct declaration")
-     {
-        if path.segments[0].ident == "measurement" {
-            if let syn::Lit::Str(lit_str) = lit {
-                lit_str.value()
+    let measurement: String =
+        if let Some(meta) = namespace_parameter(&ast.attrs, &namespace) {
+            if let syn::NestedMeta::Meta
+            (syn::Meta::NameValue(
+                 syn::MetaNameValue {
+                     path, lit, ..
+                 }
+             )
+            ) = meta {
+                if path.segments[0].ident == "measurement" {
+                    if let syn::Lit::Str(lit_str) = lit {
+                        lit_str.value()
+                    } else {
+                        let span = lit.span();
+                        return (quote_spanned! { span => compile_error!("Measurement should be a string"); }).into();
+                    }
+                } else {
+                    let span = path.segments[0].ident.span();
+                    return (quote_spanned! { span => compile_error!("Top attribute is not measurement, which was expected") }).into();
+                }
             } else {
-                let span = lit.span();
-                return (quote_spanned! { span => compile_error!("Measurement should be a string"); }).into();
+                let span = ast.attrs[0].path.segments[0].ident.span();
+                return (quote_spanned! { span => compile_error!("Did not find a suitable measurement tag should be in format '#[point(measurement = \"name\")]'"); }).into();
             }
-        } else {
-            let span = path.segments[0].ident.span();
-            return (quote_spanned! { span => compile_error!("Top attribute is not measurement, which was expected") }).into();
         }
-    } else {
-        ast.ident.to_string()
-        // let span = ast.attrs[0].path.segments[0].ident.span();
-        // return (quote_spanned! { span => compile_error!("Did not find a suitable measurement tag should be in format '#[point(measurement = \"name\")]'"); }).into();
-    };
+        else {
+            name.to_string()
+        };
+
 
     let ast_fields = ast.fields();
 
