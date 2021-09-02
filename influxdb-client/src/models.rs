@@ -11,7 +11,7 @@ pub enum Value {
 }
 
 impl<T: ToString> From<T> for Value {
-    default  fn from(t: T) -> Self {
+    default fn from(t: T) -> Self {
         Value::Str(t.to_string())
     }
 }
