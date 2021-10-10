@@ -1,10 +1,10 @@
 extern crate proc_macro;
 
 use proc_macro::TokenStream;
+
+use proc_macro_roids::{DeriveInputStructExt, FieldExt, namespace_parameter};
 use quote::{quote, quote_spanned};
 use syn::spanned::Spanned;
-
-use proc_macro_roids::{namespace_parameter, DeriveInputStructExt, FieldExt};
 
 #[proc_macro_derive(PointSerialize, attributes(point))]
 pub fn point_serialize_derive(input: TokenStream) -> TokenStream {
@@ -149,7 +149,7 @@ pub fn point_serialize_derive(input: TokenStream) -> TokenStream {
         quote! {
             impl PointSerialize for #name {
                 fn serialize(&self) -> String {
-                    format!(#complete_text, #measurement, #(self.#tag_tokens),*, #(self.#field_tokens),*).to_string()
+                    format!(#complete_text, #measurement, #(self.#tag_tokens),*, #(self.#field_tokens.into::<Value>().format()),*).to_string()
                 }
                 #serialize_with_timestamp
             }
