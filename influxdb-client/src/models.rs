@@ -1,6 +1,7 @@
 use crate::escape;
 use crate::traits::PointSerialize;
-use std::fmt::Write;
+use std::fmt::{Debug, Formatter, Write};
+use chrono::{DateTime, NaiveDateTime, Utc};
 
 #[derive(Debug, Clone)]
 pub enum Value {
@@ -33,10 +34,26 @@ impl From<bool> for Value {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Clone, PartialEq)]
 pub enum Timestamp {
     Str(String),
     Int(i64),
+}
+
+impl Debug for Timestamp {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Timestamp::Str(s) => {
+                write!(f, "StrTimestamp({})", s)
+            }
+            Timestamp::Int(n) => {
+                let naive = NaiveDateTime::from_timestamp(*n, 0);
+                let datetime = DateTime::from_utc(naive, Utc).format("%Y-%m-%d %H:%M:%S");
+                write!(f, "IntTimestamp({})", datetime)
+            }
+        }
+
+    }
 }
 
 impl Default for Timestamp {

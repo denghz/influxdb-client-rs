@@ -13,7 +13,7 @@ An unofficial client-library for InfluxDB v2.
 influxdb-client = "0.1.4"
 ```
 
-## ❤️‍🔥 Usage
+## ❤️🔥 Usage
 
 ### Insert by building a Point
 ```rust
