@@ -48,8 +48,9 @@ impl Debug for Timestamp {
             }
             Timestamp::Int(n) => {
                 let naive = NaiveDateTime::from_timestamp(*n, 0);
-                let datetime = DateTime::from_utc(naive, Utc).format("%Y-%m-%d %H:%M:%S");
-                write!(f, "IntTimestamp({})", datetime)
+                let datetime: DateTime<Utc> = DateTime::from_utc(naive, Utc);
+                let format_date = datetime.format("%Y-%m-%d %H:%M:%S");
+                write!(f, "IntTimestamp({})", format_date)
             }
         }
 
