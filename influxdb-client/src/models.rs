@@ -1,7 +1,9 @@
+use std::fmt::{Debug, Formatter, Write};
+
+use chrono::{DateTime, NaiveDateTime, Utc};
+
 use crate::escape;
 use crate::traits::PointSerialize;
-use std::fmt::{Debug, Formatter, Write};
-use chrono::{DateTime, NaiveDateTime, Utc};
 
 #[derive(Debug, Clone)]
 pub enum Value {
@@ -34,6 +36,27 @@ impl From<bool> for Value {
     }
 }
 
+impl Value {
+    pub fn format(&self) -> String {
+        match self {
+            Value::Str(s) => {
+                format!(
+                    "\"{}\"",
+                    escape::escape_field_value_string(&s)
+                )
+            }
+            Value::Int(i) => {
+                format!("{}", i)
+            }
+            Value::Float(f) => {
+                format!("{}", f)
+            }
+            Value::Bool(b) => {
+                format!("{}", b)
+            }
+        }
+    }
+}
 #[derive(Clone, PartialEq)]
 pub enum Timestamp {
     Str(String),
