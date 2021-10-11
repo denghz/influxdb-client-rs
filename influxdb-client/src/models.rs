@@ -30,6 +30,12 @@ impl From<i64> for Value {
     }
 }
 
+impl From<u64> for Value {
+    fn from(v: i64) -> Value {
+        Value::Int(v as i64)
+    }
+}
+
 impl From<bool> for Value {
     fn from(v: bool) -> Value {
         Value::Bool(v)
