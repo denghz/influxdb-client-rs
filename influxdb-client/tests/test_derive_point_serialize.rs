@@ -1,5 +1,5 @@
+use influxdb_client::{PointSerialize, Timestamp, Value};
 use influxdb_client::derives::PointSerialize;
-use influxdb_client::{PointSerialize, Timestamp};
 
 #[test]
 fn test_derive_serialize() {
@@ -11,7 +11,7 @@ fn test_derive_serialize() {
         #[point(tag = "notTicker2")]
         ticker2: String,
         #[point(field = "notPrice")]
-        price: f32,
+        price: f64,
         #[point(field)]
         price2: String,
         #[point(timestamp)]
@@ -43,7 +43,7 @@ fn test_derive_serialize_with_timestamp() {
         #[point(tag = "notTicker2")]
         ticker2: String,
         #[point(field = "notPrice")]
-        price: f32,
+        price: f64,
         #[point(field)]
         price2: String,
         #[point(timestamp)]

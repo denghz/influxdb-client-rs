@@ -74,7 +74,7 @@ fn test_point_serialize_all_types() {
         .tag("tag_string", "Hello world :D")
         .field("float", 2.345)
         .field("bool", true)
-        .field("int", -9223372036854775806)
+        .field("int", -9223372036854775806i64)
         .field("field_string", "Hello world :D\"")
         .timestamp(-9223372036854775806);
 
