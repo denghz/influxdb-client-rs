@@ -31,7 +31,7 @@ impl From<i64> for Value {
 }
 
 impl From<u64> for Value {
-    fn from(v: i64) -> Value {
+    fn from(v: u64) -> Value {
         Value::Int(v as i64)
     }
 }
