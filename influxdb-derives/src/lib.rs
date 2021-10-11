@@ -74,15 +74,10 @@ pub fn point_serialize_derive(input: TokenStream) -> TokenStream {
     }
 
     macro_rules! string_vec_joiner {
-        ($vec:ident, $quotes:expr) => {
+        ($vec:ident) => {
             $vec.iter()
                 .map(|it| {
-                    if $quotes {
-                        let it = it.to_owned() + ".format()";
-                        format!("{}={{:?}}", it)
-                    } else {
-                        format!("{}={{}}", it)
-                    }
+                    format!("{}={{}}", it)
                 })
                 .collect::<Vec<String>>()
                 .join(",")
@@ -100,7 +95,7 @@ pub fn point_serialize_derive(input: TokenStream) -> TokenStream {
     for field in fields {
         field_splitter!(field_names, field_tokens, field);
     }
-    let field_names_combined = string_vec_joiner!(field_names, true);
+    let field_names_combined = string_vec_joiner!(field_names);
 
     let mut tag_names: Vec<String> = Vec::new();
     let mut tag_tokens: Vec<&syn::Ident> = Vec::new();
@@ -110,7 +105,7 @@ pub fn point_serialize_derive(input: TokenStream) -> TokenStream {
     {
         field_splitter!(tag_names, tag_tokens, field);
     }
-    let tag_names_combined = string_vec_joiner!(tag_names, false);
+    let tag_names_combined = string_vec_joiner!(tag_names);
 
     let complete_text = if tag_names_combined.is_empty() {
         format!("{{}} {}", field_names_combined)
@@ -150,7 +145,7 @@ pub fn point_serialize_derive(input: TokenStream) -> TokenStream {
         quote! {
             impl PointSerialize for #name {
                 fn serialize(&self) -> String {
-                    format!(#complete_text, #measurement, #(self.#tag_tokens),*, #(Value::from(self.#field_tokens)),*).to_string()
+                    format!(#complete_text, #measurement, #(self.#tag_tokens),*, #(Value::from(self.#field_tokens).format()),*).to_string()
                 }
                 #serialize_with_timestamp
             }
@@ -159,7 +154,7 @@ pub fn point_serialize_derive(input: TokenStream) -> TokenStream {
         quote! {
             impl PointSerialize for #name {
                 fn serialize(&self) -> String {
-                    format!(#complete_text, #measurement, #(self.#field_tokens),*).to_string()
+                    format!(#complete_text, #measurement, #(Value::from(self.#field_tokens).format()),*).to_string()
                 }
                 #serialize_with_timestamp
             }
