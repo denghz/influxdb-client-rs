@@ -5,7 +5,7 @@ use chrono::{DateTime, NaiveDateTime, Utc};
 use crate::escape;
 use crate::traits::PointSerialize;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Value {
     Str(String),
     Int(i64),
